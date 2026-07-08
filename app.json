@@ -1,0 +1,44 @@
+{
+  "expo": {
+    "name": "SPA Booking",
+    "slug": "fawad-hussain",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "scheme": "spabooking",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.asrbpo.spabooking"
+    },
+    "android": {
+      "package": "com.asrbpo.spabooking",
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "@react-native-community/datetimepicker",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "42d572d6-8c7f-4013-b8de-9b70cc98b3fd"
+      }
+    }
+  }
+}
