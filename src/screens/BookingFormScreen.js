@@ -10,11 +10,12 @@ import { C, radius, shadow } from "../lib/theme";
 import { money, Avatar, IconAvatar, StatePill } from "../components/ui";
 import Icon from "../components/Icon";
 import PickerModal from "../components/PickerModal";
+import { printBookingReceipt } from "../lib/receipt";
 import { fromOdoo, addMinutes, toOdoo, fmtTime, fmtDate } from "../lib/datetime";
 import { PALETTE } from "../lib/colors";
 
 export default function BookingFormScreen({ route, navigation }) {
-  const { customers, products, employees, currency, notify, refreshInvoices } = useData();
+  const { customers, products, employees, currency, notify, refreshInvoices, company } = useData();
   const { mode, booking, draft } = route.params || {};
   const editing = mode === "edit";
 
@@ -99,6 +100,39 @@ export default function BookingFormScreen({ route, navigation }) {
     catch (e) { notify(e.message || "Failed", "err"); }
     finally { setBusy(false); }
   }
+  async function handlePrint() {
+    try {
+      const activeInv = invoiceList.find((i) => i.state !== "cancel");
+      let rcptServices, rcptTotal;
+      if (activeInv && activeInv.lines?.length) {
+        // bill from the invoice: tax folded into each line total (no separate tax line)
+        rcptServices = activeInv.lines.map((l) => ({
+          name: l.product_name || l.description,
+          qty: l.quantity,
+          price: l.quantity ? l.price_total / l.quantity : l.price_total,
+          amount: l.price_total,
+        }));
+        rcptTotal = activeInv.amount_total;
+      } else {
+        rcptServices = services.map((x) => ({ name: x.product.name, qty: x.qty, price: x.product.list_price, duration: x.product.duration || 30 }));
+        rcptTotal = totalPrice;
+      }
+      await printBookingReceipt({
+        companyName: company?.name || "SPA",
+        companyAddress: company?.address, companyPhone: company?.phone, companyEmail: company?.email,
+        currency,
+        ref: editing ? booking.name : "",
+        customerName: customer?.name,
+        employeeName: employee?.name || "Unassigned",
+        start, end, durationMin: totalDuration,
+        services: rcptServices,
+        total: rcptTotal,
+        invoice: activeInv ? { name: activeInv.name, state: activeInv.state } : null,
+        note,
+      });
+    } catch (e) { notify(e.message || "Could not print", "err"); }
+  }
+
   // invoice ops keep the form open and refresh the linked-invoice list live
   async function invoiceOp(fn, okMsg) {
     setBusy(true);
@@ -241,6 +275,9 @@ export default function BookingFormScreen({ route, navigation }) {
 
         {editing && (
           <View style={{ gap: 10, marginTop: 12 }}>
+            <TouchableOpacity style={s.print} onPress={handlePrint}>
+              <Icon name="receipt" size={16} color={C.violet} /><Text style={s.printT}>Print receipt</Text>
+            </TouchableOpacity>
             {!hasActiveInvoice && (
               <TouchableOpacity style={s.gold} disabled={busy} onPress={() => invoiceOp(() => api.invoiceBooking(booking.id), "Draft invoice created")}>
                 <Icon name="receipt" size={16} color="#7a4a05" /><Text style={s.goldT}>{invoiceList.length ? "Re-create invoice" : "Create draft invoice"}</Text>
@@ -338,4 +375,11 @@ const s = StyleSheet.create({
   lockBanner: { flexDirection: "row", alignItems: "center", gap: 9, padding: 11, borderRadius: 12, marginBottom: 4,
     backgroundColor: "rgba(234,179,8,0.12)", borderWidth: 1, borderColor: "rgba(234,179,8,0.32)" },
   lockTxt: { flex: 1, fontSize: 12.5, fontWeight: "600", color: "#9a6a00" },
+  toggleRow: { flexDirection: "row", alignItems: "center", marginTop: 10, padding: 12, borderRadius: 12,
+    backgroundColor: C.surface, borderWidth: 1, borderColor: C.border },
+  toggleTitle: { fontSize: 13.5, fontWeight: "700", color: C.text },
+  toggleSub: { fontSize: 11.5, color: C.text2, marginTop: 2, lineHeight: 15 },
+  print: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, height: 48, borderRadius: 13,
+    backgroundColor: "rgba(124,58,237,0.08)", borderWidth: 1, borderColor: "rgba(124,58,237,0.25)" },
+  printT: { color: C.violet, fontWeight: "700", fontSize: 14 },
 });
