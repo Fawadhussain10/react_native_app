@@ -7,10 +7,12 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useDispatch } from "react-redux";
 import * as api from "../lib/api";
 import { login as loginAction } from "../store/authSlice";
-import { C, radius, shadow } from "../lib/theme";
+import { useC, makeStyles, radius, shadow } from "../lib/theme";
 import Icon from "../components/Icon";
 
 export default function LoginScreen() {
+  const C = useC();
+  const s = useStyles();
   const dispatch = useDispatch();
   const [server, setServer] = useState("");
   const [db, setDb] = useState("");
@@ -98,6 +100,8 @@ export default function LoginScreen() {
 }
 
 function Field({ label, icon, ...props }) {
+  const C = useC();
+  const s = useStyles();
   return (
     <View style={{ marginTop: 12 }}>
       <Text style={s.label}>{label}</Text>
@@ -109,9 +113,9 @@ function Field({ label, icon, ...props }) {
   );
 }
 
-const s = StyleSheet.create({
+const useStyles = makeStyles((C) => ({
   scroll: { flexGrow: 1, justifyContent: "center", padding: 22 },
-  card: { backgroundColor: "#fff", borderRadius: 26, padding: 26, alignItems: "stretch" },
+  card: { backgroundColor: C.surface, borderRadius: 26, padding: 26, alignItems: "stretch" },
   logo: { width: 62, height: 62, borderRadius: 20, alignSelf: "center", alignItems: "center", justifyContent: "center", marginBottom: 14 },
   title: { fontSize: 24, fontWeight: "800", color: C.text, textAlign: "center", letterSpacing: -0.5 },
   sub: { fontSize: 13.5, color: C.text2, textAlign: "center", marginTop: 6, marginBottom: 8 },
@@ -123,11 +127,11 @@ const s = StyleSheet.create({
   btnT: { color: "#fff", fontSize: 15.5, fontWeight: "700" },
   err: { flexDirection: "row", alignItems: "center", gap: 8, marginTop: 14, backgroundColor: "rgba(244,63,94,0.1)",
     borderWidth: 1, borderColor: "rgba(244,63,94,0.28)", borderRadius: 12, padding: 11 },
-  errT: { color: "#9f1239", fontSize: 13, fontWeight: "600", flex: 1 },
+  errT: { color: C.danger, fontSize: 13, fontWeight: "600", flex: 1 },
   portal: { flexDirection: "row", alignItems: "center", gap: 12, marginTop: 14, padding: 13, borderRadius: 14,
-    backgroundColor: "rgba(124,58,237,0.10)", borderWidth: 1, borderColor: "rgba(124,58,237,0.28)" },
-  portalT: { fontSize: 13, fontWeight: "800", color: "#4c1d95" },
-  portalS: { fontSize: 12, color: "#6b21a8", marginTop: 2 },
+    backgroundColor: "rgba(124,58,237,0.12)", borderWidth: 1, borderColor: "rgba(124,58,237,0.28)" },
+  portalT: { fontSize: 13, fontWeight: "800", color: C.violet },
+  portalS: { fontSize: 12, color: C.violetLight, marginTop: 2 },
   powered: { textAlign: "center", fontSize: 12, color: C.text3, fontWeight: "600" },
   poweredB: { fontWeight: "800", color: C.accentDark },
-});
+}));

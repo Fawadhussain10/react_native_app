@@ -1,11 +1,13 @@
 import { useLayoutEffect } from "react";
 import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { useData } from "../lib/AppData";
-import { C } from "../lib/theme";
+import { useC, makeStyles } from "../lib/theme";
 import { money, Avatar, IconAvatar, StatePill } from "../components/ui";
 import Icon from "../components/Icon";
 
 function Row({ label, value, icon }) {
+  const C = useC();
+  const s = useStyles();
   if (!value) return null;
   return (
     <View style={s.row}>
@@ -16,6 +18,8 @@ function Row({ label, value, icon }) {
 }
 
 export default function DetailScreen({ route, navigation }) {
+  const C = useC();
+  const s = useStyles();
   const { type, item } = route.params;
   const { currency } = useData();
   useLayoutEffect(() => {
@@ -108,7 +112,7 @@ export default function DetailScreen({ route, navigation }) {
   );
 }
 
-const s = StyleSheet.create({
+const useStyles = makeStyles((C) => ({
   hero: { flexDirection: "row", alignItems: "center", gap: 14, marginBottom: 14 },
   title: { fontSize: 20, fontWeight: "800", color: C.text, letterSpacing: -0.4 },
   sub: { fontSize: 13, color: C.accentDark, fontWeight: "600", marginTop: 3 },
@@ -123,4 +127,4 @@ const s = StyleSheet.create({
   lineCell: { fontSize: 10.5, fontWeight: "800", color: C.text3, letterSpacing: 0.4 },
   lineCellQty: { width: 40, fontSize: 12.5, color: C.text, textAlign: "center" },
   lineName: { fontSize: 12.5, color: C.text },
-});
+}));

@@ -1,7 +1,7 @@
 import { useState, useMemo, useLayoutEffect } from "react";
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from "react-native";
 import { useData } from "../lib/AppData";
-import { C, radius } from "../lib/theme";
+import { useC, makeStyles, radius } from "../lib/theme";
 import { money, Avatar, IconAvatar, SearchBar, Empty } from "../components/ui";
 import Icon from "../components/Icon";
 
@@ -12,6 +12,8 @@ const CONF = {
 };
 
 export default function DirectoryScreen({ route, navigation }) {
+  const C = useC();
+  const s = useStyles();
   const type = route.params?.type || "contacts";
   const conf = CONF[type];
   const data = useData();
@@ -61,10 +63,10 @@ export default function DirectoryScreen({ route, navigation }) {
   );
 }
 
-const s = StyleSheet.create({
+const useStyles = makeStyles((C) => ({
   count: { fontSize: 12, color: C.text3, marginTop: 8, marginLeft: 2 },
   card: { flexDirection: "row", alignItems: "center", gap: 12, backgroundColor: C.surface, borderWidth: 1, borderColor: C.border, borderRadius: 16, padding: 12, marginBottom: 9 },
   title: { fontSize: 14.5, fontWeight: "700", color: C.text },
   sub: { fontSize: 12, color: C.text2, marginTop: 2 },
   right: { fontSize: 14, fontWeight: "800" },
-});
+}));

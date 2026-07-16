@@ -6,7 +6,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { LinearGradient } from "expo-linear-gradient";
 import { useData } from "../lib/AppData";
 import * as api from "../lib/api";
-import { C, radius, shadow } from "../lib/theme";
+import { useC, makeStyles, radius, shadow } from "../lib/theme";
 import { money, Avatar, IconAvatar, StatePill } from "../components/ui";
 import Icon from "../components/Icon";
 import PickerModal from "../components/PickerModal";
@@ -15,6 +15,8 @@ import { fromOdoo, addMinutes, toOdoo, fmtTime, fmtDate } from "../lib/datetime"
 import { PALETTE } from "../lib/colors";
 
 export default function BookingFormScreen({ route, navigation }) {
+  const C = useC();
+  const s = useStyles();
   const { customers, products, employees, currency, notify, refreshInvoices, company } = useData();
   const { mode, booking, draft } = route.params || {};
   const editing = mode === "edit";
@@ -327,7 +329,7 @@ export default function BookingFormScreen({ route, navigation }) {
   );
 }
 
-const s = StyleSheet.create({
+const useStyles = makeStyles((C) => ({
   header: { flexDirection: "row", alignItems: "center", padding: 16, paddingTop: 14, backgroundColor: C.surface, borderBottomWidth: 1, borderBottomColor: C.border },
   hTitle: { fontSize: 18, fontWeight: "800", color: C.text },
   hRef: { fontSize: 12.5, color: C.accentDark, fontWeight: "700", marginTop: 2 },
@@ -382,4 +384,4 @@ const s = StyleSheet.create({
   print: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, height: 48, borderRadius: 13,
     backgroundColor: "rgba(124,58,237,0.08)", borderWidth: 1, borderColor: "rgba(124,58,237,0.25)" },
   printT: { color: C.violet, fontWeight: "700", fontSize: 14 },
-});
+}));

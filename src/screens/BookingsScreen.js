@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, 
 import { useFocusEffect } from "@react-navigation/native";
 import { useData } from "../lib/AppData";
 import * as api from "../lib/api";
-import { C, radius } from "../lib/theme";
+import { useC, makeStyles, radius } from "../lib/theme";
 import { money, StatePill, SearchBar, Empty } from "../components/ui";
 import { fromOdoo, fmtDateShort, fmtTime } from "../lib/datetime";
 
@@ -13,6 +13,8 @@ const FILTERS = [
 ];
 
 export default function BookingsScreen({ navigation }) {
+  const C = useC();
+  const s = useStyles();
   const { notify } = useData();
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -81,7 +83,7 @@ export default function BookingsScreen({ navigation }) {
   );
 }
 
-const s = StyleSheet.create({
+const useStyles = makeStyles((C) => ({
   chip: { paddingHorizontal: 13, height: 32, borderRadius: radius.pill, backgroundColor: C.surface, borderWidth: 1, borderColor: C.border, justifyContent: "center" },
   chipOn: { backgroundColor: C.accent, borderColor: C.accent },
   chipT: { fontSize: 12.5, fontWeight: "700", color: C.text2 },
@@ -93,4 +95,4 @@ const s = StyleSheet.create({
   sub: { fontSize: 12, color: C.text2, marginTop: 2 },
   when: { fontSize: 11, color: C.text3, marginTop: 3 },
   amt: { fontSize: 14, fontWeight: "800", color: C.text },
-});
+}));

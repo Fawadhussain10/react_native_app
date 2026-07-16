@@ -4,7 +4,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useData } from "../lib/AppData";
 import * as api from "../lib/api";
-import { C, radius, shadow } from "../lib/theme";
+import { useC, makeStyles, radius, shadow } from "../lib/theme";
 import { money, StatePill } from "../components/ui";
 import Icon from "../components/Icon";
 import {
@@ -13,6 +13,8 @@ import {
 import { assignColors, readableText } from "../lib/colors";
 
 export default function CalendarScreen({ navigation }) {
+  const C = useC();
+  const s = useStyles();
   const { notify } = useData();
   const [anchor, setAnchor] = useState(startOfDay(new Date()));
   const [bookings, setBookings] = useState([]);
@@ -95,7 +97,7 @@ export default function CalendarScreen({ navigation }) {
   );
 }
 
-const s = StyleSheet.create({
+const useStyles = makeStyles((C) => ({
   header: { flexDirection: "row", alignItems: "center", padding: 12, backgroundColor: C.surface, borderBottomWidth: 1, borderBottomColor: C.border },
   nav: { width: 38, height: 38, borderRadius: 10, alignItems: "center", justifyContent: "center", backgroundColor: C.surface2, borderWidth: 1, borderColor: C.border },
   date: { fontSize: 15, fontWeight: "700", color: C.text },
@@ -112,4 +114,4 @@ const s = StyleSheet.create({
   cardAmt: { fontSize: 14, fontWeight: "800" },
   fabWrap: { position: "absolute", right: 20, bottom: 24 },
   fab: { width: 58, height: 58, borderRadius: 20, alignItems: "center", justifyContent: "center", ...shadow(10) },
-});
+}));

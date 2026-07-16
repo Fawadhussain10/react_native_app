@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { DataProvider } from "../lib/AppData";
-import { C, NAV_COLORS } from "../lib/theme";
+import { useC, NAV_COLORS } from "../lib/theme";
 import Icon from "../components/Icon";
 
 import LoginScreen from "../screens/LoginScreen";
@@ -24,10 +24,11 @@ const TABS = [
   { name: "Calendar", comp: CalendarScreen, icon: "calendar", c: NAV_COLORS.calendar },
   { name: "Bookings", comp: BookingsScreen, icon: "clock", c: NAV_COLORS.bookings },
   { name: "Invoices", comp: InvoicesScreen, icon: "receipt", c: NAV_COLORS.invoices },
-  { name: "More", comp: MoreScreen, icon: "menu", c: C.text2 },
+  { name: "More", comp: MoreScreen, icon: "menu", c: "#64748b" },
 ];
 
 function Tabs() {
+  const C = useC();
   return (
     <Tab.Navigator
       screenOptions={{
@@ -53,6 +54,7 @@ function Tabs() {
 }
 
 export default function RootNavigator() {
+  const C = useC();
   const { status, booting } = useSelector((st) => st.auth);
 
   if (booting) {

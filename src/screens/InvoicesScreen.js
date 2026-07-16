@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, ScrollView } from "react-native";
 import { useData } from "../lib/AppData";
-import { C, radius } from "../lib/theme";
+import { useC, makeStyles, radius } from "../lib/theme";
 import { money, IconAvatar, StatePill, SearchBar, Empty, CountBadge } from "../components/ui";
 
 const FILTERS = [
@@ -10,6 +10,8 @@ const FILTERS = [
 ];
 
 export default function InvoicesScreen({ navigation }) {
+  const C = useC();
+  const s = useStyles();
   const { invoices, summary, currency } = useData();
   const [q, setQ] = useState("");
   const [filter, setFilter] = useState("all");
@@ -59,6 +61,7 @@ export default function InvoicesScreen({ navigation }) {
 }
 
 function Tile({ label, value, badge, color, hero }) {
+  const s = useStyles();
   return (
     <View style={[s.tile, hero && s.tileHero]}>
       <Text style={s.tileLabel}>{label}</Text>
@@ -70,7 +73,7 @@ function Tile({ label, value, badge, color, hero }) {
   );
 }
 
-const s = StyleSheet.create({
+const useStyles = makeStyles((C) => ({
   tiles: { flexDirection: "row", gap: 8, marginBottom: 10 },
   tile: { flex: 1, backgroundColor: C.surface, borderWidth: 1, borderColor: C.border, borderRadius: 14, padding: 11, minHeight: 62 },
   tileHero: { backgroundColor: "rgba(16,185,129,0.10)", borderColor: "rgba(16,185,129,0.28)" },
@@ -84,4 +87,4 @@ const s = StyleSheet.create({
   name: { fontSize: 14, fontWeight: "700", color: C.text },
   sub: { fontSize: 12, color: C.text2, marginTop: 2 },
   amt: { fontSize: 14, fontWeight: "800", color: C.text },
-});
+}));

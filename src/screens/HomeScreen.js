@@ -2,11 +2,12 @@ import { ScrollView, View, Text, StyleSheet, RefreshControl, TouchableOpacity } 
 import { useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { useData } from "../lib/AppData";
-import { C, radius, shadow } from "../lib/theme";
+import { useC, makeStyles, useThemeMode, radius, shadow } from "../lib/theme";
 import { money, Avatar, IconAvatar, CountBadge } from "../components/ui";
 import Icon from "../components/Icon";
 
 function Kpi({ icon, label, value, badge, colors, onPress }) {
+  const s = useStyles();
   return (
     <TouchableOpacity style={[s.kpi, shadow(4)]} activeOpacity={0.85} onPress={onPress}>
       <IconAvatar icon={icon} size={42} colors={colors} />
@@ -22,6 +23,8 @@ function Kpi({ icon, label, value, badge, colors, onPress }) {
 }
 
 function Section({ title, icon, children }) {
+  const C = useC();
+  const s = useStyles();
   return (
     <View style={[s.section, shadow(3)]}>
       <View style={s.sectionHead}>
@@ -34,6 +37,7 @@ function Section({ title, icon, children }) {
 }
 
 function Row({ avatar, title, sub, right }) {
+  const s = useStyles();
   return (
     <View style={s.row}>
       {avatar}
@@ -47,6 +51,9 @@ function Row({ avatar, title, sub, right }) {
 }
 
 export default function HomeScreen({ navigation }) {
+  const C = useC();
+  const s = useStyles();
+  const { mode } = useThemeMode();
   const { company, customers, products, employees, today, summary, currency, refreshAll, session } = useData();
   const [refreshing, setRefreshing] = useState(false);
   const onRefresh = async () => { setRefreshing(true); await refreshAll(); setRefreshing(false); };
@@ -59,7 +66,7 @@ export default function HomeScreen({ navigation }) {
     <ScrollView style={{ flex: 1, backgroundColor: C.bg }} contentContainerStyle={{ padding: 16, paddingBottom: 30 }}
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={C.accent} />}>
 
-      <LinearGradient colors={["#ecfdf5", "#eef2ff"]} style={[s.hero, shadow(6)]}>
+      <LinearGradient colors={mode === "dark" ? ["#16233a", "#0f1930"] : ["#ecfdf5", "#eef2ff"]} style={[s.hero, shadow(6)]}>
         <Text style={s.hello}>{greeting}, {first} 👋</Text>
         <Text style={s.heroSub}>Here's what's happening at <Text style={{ fontWeight: "800" }}>{company?.name || "your spa"}</Text> today.</Text>
         <TouchableOpacity onPress={() => navigation.navigate("Calendar")} style={{ marginTop: 12 }}>
@@ -110,7 +117,7 @@ export default function HomeScreen({ navigation }) {
   );
 }
 
-const s = StyleSheet.create({
+const useStyles = makeStyles((C) => ({
   hero: { borderRadius: 20, padding: 20, borderWidth: 1, borderColor: C.border, marginBottom: 16 },
   hello: { fontSize: 22, fontWeight: "800", color: C.text, letterSpacing: -0.5 },
   heroSub: { fontSize: 13.5, color: C.text2, marginTop: 5 },
@@ -129,4 +136,4 @@ const s = StyleSheet.create({
   rowSub: { fontSize: 11.5, color: C.text2, marginTop: 1 },
   rowMeta: { fontSize: 13, fontWeight: "800", color: C.text },
   empty: { color: C.text3, fontSize: 12.5, textAlign: "center", padding: 18 },
-});
+}));

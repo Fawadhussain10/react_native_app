@@ -1,10 +1,9 @@
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, Alert, Switch } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useData } from "../lib/AppData";
-import { C, radius, shadow } from "../lib/theme";
+import { useC, makeStyles, useThemeMode, radius, shadow, NAV_COLORS } from "../lib/theme";
 import { Avatar } from "../components/ui";
 import Icon from "../components/Icon";
-import { NAV_COLORS } from "../lib/theme";
 
 const MENU = [
   { label: "Contacts", type: "contacts", icon: "user", c: NAV_COLORS.contacts },
@@ -13,6 +12,9 @@ const MENU = [
 ];
 
 export default function MoreScreen({ navigation }) {
+  const C = useC();
+  const s = useStyles();
+  const { mode, toggle } = useThemeMode();
   const { session, company, doLogout } = useData();
   const confirmLogout = () => {
     Alert.alert("Log out", "Sign out of this account?", [
@@ -29,6 +31,19 @@ export default function MoreScreen({ navigation }) {
           <Text style={s.userName}>{session?.name}</Text>
           <Text style={s.userSub}>{session?.login} · {session?.db}</Text>
         </View>
+      </View>
+
+      {/* appearance / dark mode toggle */}
+      <View style={[s.themeRow, shadow(3)]}>
+        <View style={[s.itemIcon, { backgroundColor: mode === "dark" ? "rgba(167,139,250,0.20)" : "rgba(234,179,8,0.18)" }]}>
+          <Icon name={mode === "dark" ? "moon" : "sun"} size={20} color={mode === "dark" ? C.violet : C.gold} />
+        </View>
+        <View style={{ flex: 1 }}>
+          <Text style={s.itemLabel}>Dark mode</Text>
+          <Text style={s.userSub}>{mode === "dark" ? "On" : "Off"}</Text>
+        </View>
+        <Switch value={mode === "dark"} onValueChange={toggle}
+          trackColor={{ true: C.accent, false: "#cbd5e1" }} thumbColor="#fff" />
       </View>
 
       <View style={{ gap: 10, marginTop: 6 }}>
@@ -59,10 +74,11 @@ export default function MoreScreen({ navigation }) {
   );
 }
 
-const s = StyleSheet.create({
+const useStyles = makeStyles((C) => ({
   user: { flexDirection: "row", alignItems: "center", gap: 13, backgroundColor: C.surface, borderWidth: 1, borderColor: C.border, borderRadius: 18, padding: 16, marginBottom: 12 },
   userName: { fontSize: 16, fontWeight: "800", color: C.text },
   userSub: { fontSize: 12.5, color: C.text2, marginTop: 2 },
+  themeRow: { flexDirection: "row", alignItems: "center", gap: 13, backgroundColor: C.surface, borderWidth: 1, borderColor: C.border, borderRadius: 16, padding: 12, marginBottom: 12 },
   item: { flexDirection: "row", alignItems: "center", gap: 13, backgroundColor: C.surface, borderWidth: 1, borderColor: C.border, borderRadius: 16, padding: 14 },
   itemIcon: { width: 40, height: 40, borderRadius: 12, alignItems: "center", justifyContent: "center" },
   itemLabel: { flex: 1, fontSize: 15, fontWeight: "700", color: C.text },
@@ -72,4 +88,4 @@ const s = StyleSheet.create({
   compRow: { fontSize: 12.5, color: C.text2, marginTop: 6 },
   logout: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 20, height: 50, borderRadius: 14, backgroundColor: "rgba(225,29,72,0.08)", borderWidth: 1, borderColor: "rgba(225,29,72,0.25)" },
   logoutT: { color: C.danger, fontWeight: "800", fontSize: 15 },
-});
+}));

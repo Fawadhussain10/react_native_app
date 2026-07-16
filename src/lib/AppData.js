@@ -1,14 +1,15 @@
 import { createContext, useContext, useState, useCallback, useEffect } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text } from "react-native";
 import { useDispatch } from "react-redux";
 import { logout as logoutAction } from "../store/authSlice";
 import * as api from "./api";
-import { C, radius, shadow } from "./theme";
+import { makeStyles, radius, shadow } from "./theme";
 
 const Ctx = createContext(null);
 export const useData = () => useContext(Ctx);
 
 function Toast({ toast }) {
+  const ts = useToastStyles();
   return (
     <View pointerEvents="none" style={ts.wrap}>
       <View style={[ts.toast, toast.kind === "err" && ts.err, toast.kind === "ok" && ts.ok, shadow(10)]}>
@@ -90,10 +91,10 @@ export function DataProvider({ children }) {
   );
 }
 
-const ts = StyleSheet.create({
+const useToastStyles = makeStyles((C) => ({
   wrap: { position: "absolute", bottom: 30, left: 0, right: 0, alignItems: "center", zIndex: 999 },
   toast: { backgroundColor: "#14151d", paddingHorizontal: 18, paddingVertical: 12, borderRadius: radius.md, maxWidth: "90%" },
   err: { backgroundColor: "#9f1239" },
   ok: { backgroundColor: "#065f46" },
   txt: { color: "#fff", fontWeight: "600", fontSize: 13 },
-});
+}));

@@ -1,7 +1,7 @@
-import { View, Text, TextInput, StyleSheet } from "react-native";
+import { View, Text, TextInput } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import Icon from "./Icon";
-import { C, radius } from "../lib/theme";
+import { useC, makeStyles, radius } from "../lib/theme";
 import { avatarHue, initials } from "../lib/colors";
 
 // Hermes-safe currency formatter (no Intl dependency).
@@ -31,21 +31,24 @@ export function IconAvatar({ icon, size = 40, colors = ["#34d399", "#059669"] })
 }
 
 export function CountBadge({ children }) {
+  const s = useStyles();
   return (
     <View style={s.countBadge}><Text style={s.countBadgeTxt}>{children}</Text></View>
   );
 }
 
-const STATE = {
-  paid: { bg: "rgba(16,185,129,0.16)", fg: "#059669", label: "Paid" },
-  posted: { bg: "rgba(16,185,129,0.16)", fg: "#059669", label: "Posted" },
-  draft: { bg: "rgba(15,23,42,0.07)", fg: C.text2, label: "Draft" },
-  confirmed: { bg: "rgba(59,130,246,0.15)", fg: "#2563eb", label: "Confirmed" },
-  done: { bg: "rgba(16,185,129,0.16)", fg: "#059669", label: "Done" },
-  cancelled: { bg: "rgba(225,29,72,0.12)", fg: C.danger, label: "Cancelled" },
-  cancel: { bg: "rgba(225,29,72,0.12)", fg: C.danger, label: "Cancelled" },
-};
 export function StatePill({ state, paid, label, fg }) {
+  const C = useC();
+  const s = useStyles();
+  const STATE = {
+    paid: { bg: "rgba(16,185,129,0.18)", fg: C.accentDark, label: "Paid" },
+    posted: { bg: "rgba(16,185,129,0.18)", fg: C.accentDark, label: "Posted" },
+    draft: { bg: C.surface2, fg: C.text2, label: "Draft" },
+    confirmed: { bg: "rgba(59,130,246,0.18)", fg: C.sky, label: "Confirmed" },
+    done: { bg: "rgba(16,185,129,0.18)", fg: C.accentDark, label: "Done" },
+    cancelled: { bg: "rgba(225,29,72,0.14)", fg: C.danger, label: "Cancelled" },
+    cancel: { bg: "rgba(225,29,72,0.14)", fg: C.danger, label: "Cancelled" },
+  };
   const key = (paid && state !== "cancel") ? "paid" : state || "draft";
   const conf = STATE[key] || STATE.draft;
   if (fg) {
@@ -63,6 +66,8 @@ export function StatePill({ state, paid, label, fg }) {
 }
 
 export function SearchBar({ value, onChangeText, placeholder }) {
+  const C = useC();
+  const s = useStyles();
   return (
     <View style={s.search}>
       <Icon name="search" size={17} color={C.text3} />
@@ -73,12 +78,13 @@ export function SearchBar({ value, onChangeText, placeholder }) {
 }
 
 export function Empty({ children }) {
+  const s = useStyles();
   return <Text style={s.empty}>{children}</Text>;
 }
 
-const s = StyleSheet.create({
+const useStyles = makeStyles((C) => ({
   countBadge: { minWidth: 22, paddingHorizontal: 8, paddingVertical: 3, borderRadius: radius.pill,
-    backgroundColor: "rgba(15,23,42,0.06)", alignItems: "center", justifyContent: "center" },
+    backgroundColor: C.surface2, borderWidth: 1, borderColor: C.border, alignItems: "center", justifyContent: "center" },
   countBadgeTxt: { fontSize: 11, fontWeight: "800", color: C.text2 },
   pill: { paddingHorizontal: 9, paddingVertical: 3, borderRadius: radius.pill, alignSelf: "flex-start" },
   pillTxt: { fontSize: 10, fontWeight: "800", textTransform: "uppercase", letterSpacing: 0.4 },
@@ -86,4 +92,4 @@ const s = StyleSheet.create({
     borderWidth: 1, borderColor: C.border, borderRadius: radius.md, paddingHorizontal: 12, height: 44 },
   searchInput: { flex: 1, fontSize: 14, color: C.text, padding: 0 },
   empty: { color: C.text3, fontSize: 13, textAlign: "center", paddingVertical: 30 },
-});
+}));

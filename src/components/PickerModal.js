@@ -1,10 +1,12 @@
 import { useState, useMemo } from "react";
-import { Modal, View, Text, TouchableOpacity, FlatList, StyleSheet } from "react-native";
-import { C, radius } from "../lib/theme";
+import { Modal, View, Text, TouchableOpacity, FlatList } from "react-native";
+import { useC, makeStyles } from "../lib/theme";
 import { SearchBar, Empty } from "./ui";
 import Icon from "./Icon";
 
 export default function PickerModal({ visible, title, items, searchKeys = ["name"], onClose, onPick, renderRow }) {
+  const C = useC();
+  const s = useStyles();
   const [q, setQ] = useState("");
   const filtered = useMemo(() => {
     const s = q.trim().toLowerCase();
@@ -50,8 +52,8 @@ export default function PickerModal({ visible, title, items, searchKeys = ["name
   );
 }
 
-const s = StyleSheet.create({
-  overlay: { flex: 1, backgroundColor: "rgba(15,23,42,0.35)", justifyContent: "flex-end" },
+const useStyles = makeStyles((C) => ({
+  overlay: { flex: 1, backgroundColor: "rgba(2,6,20,0.55)", justifyContent: "flex-end" },
   sheet: { backgroundColor: C.bg, borderTopLeftRadius: 24, borderTopRightRadius: 24, maxHeight: "82%", paddingTop: 8 },
   head: { flexDirection: "row", alignItems: "center", padding: 16, paddingBottom: 10 },
   title: { flex: 1, fontSize: 17, fontWeight: "800", color: C.text },
@@ -61,4 +63,4 @@ const s = StyleSheet.create({
   rowSel: { borderColor: C.accent, backgroundColor: "rgba(16,185,129,0.08)" },
   rowTitle: { fontSize: 14, fontWeight: "700", color: C.text },
   rowSub: { fontSize: 12, color: C.text2, marginTop: 1 },
-});
+}));
